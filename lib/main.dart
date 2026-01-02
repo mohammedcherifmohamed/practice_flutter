@@ -25,7 +25,7 @@ class MyAppState extends State<MyApp> {
   final TextEditingController userNameController = TextEditingController() ;
   final TextEditingController emailController = TextEditingController() ;
   final TextEditingController passwordController = TextEditingController();
-  String lastDelete = " ";
+  String lastDelete = "ghuest11";
 List<Map<String,dynamic>> resultText = [] ;
   @override
       Widget build(BuildContext context){
@@ -105,15 +105,12 @@ List<Map<String,dynamic>> resultText = [] ;
                               print("userName :  " + userNameController.text.trim());
                               print("userName :  " + emailController.text.trim());
                               print("userName :  " + passwordController.text.trim());
-                              SharedPreferences prefs = await SharedPreferences.getInstance();
 
-                              await  prefs.setString("lastDelete",emailController.text);
                               setState((){
                                 resultText  = users ;
                                 //'user Nmae : ${userNameController.text.trim()}\n'
                                   //            'user Nmae : ${emailController.text.trim()}\n'
                                     //          'user Nmae : ${passwordController.text.trim()}\n' ;
-                                lastDelete =  prefs.getString("lastDelete") ?? 'geust';
                               });
                             },
 
@@ -134,6 +131,7 @@ List<Map<String,dynamic>> resultText = [] ;
                     ),
                 ),
               ),
+              Text(  lastDelete),
               Expanded(
                 child: resultText.isEmpty
                     ? Center(child: Text("No users"))
@@ -154,7 +152,15 @@ List<Map<String,dynamic>> resultText = [] ;
                             await db.destroy(user["name"]) ;
                             print("deleting from main : "+ user['name'] +" ..." );
                             List<Map<String,dynamic>> users  = await db.getUsers() ;
-                            setState(() {
+
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                            await  prefs.setString("lastDelete",user['name']);
+                            lastDelete =  prefs.getString("lastDelete") ?? 'geust';
+                            print("___________ from shared prefs : " + user["name"]);
+                            setState((){
+                              lastDelete =  prefs.getString("lastDelete") ?? 'geust';
+
                               resultText = users ;
 
                             });
@@ -166,7 +172,7 @@ List<Map<String,dynamic>> resultText = [] ;
                   },
                 ),
               ),
-              Text(  lastDelete),
+
             ],
           ),
       ),
